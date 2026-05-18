@@ -1,5 +1,21 @@
 let currentLang = 'es';
 
+// ==========================================
+// --- PERSISTENCIA DE SESIÓN Y RUTAS ---
+// ==========================================
+const isLoggedIn = localStorage.getItem('docedos_logged_in') === 'true';
+const currentPath = window.location.pathname;
+
+// 1. Si ya inició sesión y entra a index o login, mandarlo directo a home
+if (isLoggedIn && (currentPath.includes('index.html') || currentPath.includes('login.html') || currentPath === '/')) {
+    window.location.href = 'home.html';
+}
+
+// 2. Si NO ha iniciado sesión e intenta entrar a home, devolverlo al login
+if (!isLoggedIn && currentPath.includes('home.html')) {
+    window.location.href = 'login.html';
+}
+
 // --- LOGICA GLOBAL (Aplica a ambas páginas) ---
 const btnLang = document.getElementById('btn-lang');
 const btnTheme = document.getElementById('btn-theme');
@@ -49,11 +65,60 @@ if (btnLang) {
     });
 }
 
-// Lógica del cambio de tema
+// SVGs para el botón de Tema
+const sunSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const moonSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+// Lógica del cambio de tema sin emojis
 if (btnTheme) {
     btnTheme.addEventListener('click', () => {
         document.body.classList.toggle('light-theme');
-        btnTheme.textContent = document.body.classList.contains('light-theme') ? '🌙' : '☀️';
+        btnTheme.innerHTML = document.body.classList.contains('light-theme') ? moonSvg : sunSvg;
+    });
+}
+
+// ==========================================
+// --- LÓGICA DE MENÚ DE AJUSTES (COLORES) ---
+// ==========================================
+const btnSettings = document.getElementById('btn-settings');
+const settingsMenu = document.getElementById('settings-menu');
+const colorBtns = document.querySelectorAll('.color-btn');
+
+// AL CARGAR LA PÁGINA: Recuperar el color guardado
+const savedColor = localStorage.getItem('docedos_theme_color');
+if (savedColor) {
+    document.body.classList.add(`theme-${savedColor}`);
+}
+
+if (btnSettings && settingsMenu) {
+    // Abrir/Cerrar el menú
+    btnSettings.addEventListener('click', () => {
+        settingsMenu.classList.toggle('active');
+    });
+
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.settings-dropdown')) {
+            settingsMenu.classList.remove('active');
+        }
+    });
+
+    // Cambiar color de tema y guardarlo
+    colorBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const color = btn.getAttribute('data-color');
+            document.body.classList.remove('theme-pink', 'theme-green'); // Limpiamos anteriores
+            
+            if (color === 'pink' || color === 'green') {
+                document.body.classList.add(`theme-${color}`);
+                localStorage.setItem('docedos_theme_color', color); // Guardamos en el navegador
+            } else {
+                // Es el color azul por defecto
+                localStorage.removeItem('docedos_theme_color'); // Borramos la preferencia
+            }
+            
+            settingsMenu.classList.remove('active');
+        });
     });
 }
 
@@ -163,6 +228,9 @@ if (formLogin) {
             const data = await response.json();
 
             if (response.ok) {
+                // GUARDAR LA SESIÓN EN LOCALSTORAGE
+                localStorage.setItem('docedos_logged_in', 'true');
+                
                 showNotification('¡Sesión iniciada con éxito!');
                 setTimeout(() => {
                     window.location.href = 'home.html';
@@ -193,6 +261,20 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Lógica para Cerrar Sesión
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', (e) => {
+        e.preventDefault(); // Evitamos que siga el enlace <a> por defecto
+        
+        // Borramos la sesión del navegador
+        localStorage.removeItem('docedos_logged_in');
+        
+        // Redirigimos al inicio
+        window.location.href = 'index.html';
+    });
+}
+
 // ==========================================
 // --- LÓGICA DE LAS ÁREAS DE BATALLA ---
 // ==========================================
@@ -221,6 +303,10 @@ function openBattleModal(title, versesArray, storageKey) {
     // 1. CREAMOS EL FRAGMENTO (Nuestra caja invisible en memoria)
     const fragment = document.createDocumentFragment();
     
+    // SVGs para el botón de Ojo
+    const eyeSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const eyeSlashSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
     versesArray.forEach((verse, index) => {
         const dayId = `day_${index + 1}`;
         const isChecked = currentProgress[dayId] ? 'checked' : '';
@@ -247,7 +333,7 @@ function openBattleModal(title, versesArray, storageKey) {
                     <div class="day-body">
                         <p class="verse-text-p">"${verse.text}"</p>
                         <div class="blur-actions">
-                            <button class="btn-blur">Ocultar</button>
+                            <button class="btn-blur" title="Ocultar/Mostrar texto">${eyeSvg}</button>
                         </div>
                     </div>
                 </div>
@@ -258,26 +344,21 @@ function openBattleModal(title, versesArray, storageKey) {
         const dayHeader = dayCard.querySelector('.day-header');
         dayHeader.addEventListener('click', (e) => {
             if(e.target.closest('.custom-checkbox')) return;
-            
             const isCurrentlyOpen = dayCard.classList.contains('open');
-            
-            document.querySelectorAll('.day-card').forEach(card => {
-                card.classList.remove('open');
-            });
-
-            if (!isCurrentlyOpen) {
-                dayCard.classList.add('open');
-            }
+            document.querySelectorAll('.day-card').forEach(card => card.classList.remove('open'));
+            if (!isCurrentlyOpen) dayCard.classList.add('open');
         });
 
-        // LÓGICA 2: Modo Blur
+        // LÓGICA 2: Modo Blur (Actualizado para el ojo)
         const verseText = dayCard.querySelector('.verse-text-p');
         const btnBlur = dayCard.querySelector('.btn-blur');
         
         const toggleBlur = () => {
             verseText.classList.toggle('blurred');
-            btnBlur.textContent = verseText.classList.contains('blurred') ? 'Desenfocar' : 'Ocultar';
+            // Cambiamos el innerHTML del botón entre ojo abierto y ojo tachado
+            btnBlur.innerHTML = verseText.classList.contains('blurred') ? eyeSlashSvg : eyeSvg;
         };
+        
         btnBlur.addEventListener('click', toggleBlur);
         verseText.addEventListener('click', () => {
             if(verseText.classList.contains('blurred')) toggleBlur();
@@ -289,15 +370,10 @@ function openBattleModal(title, versesArray, storageKey) {
             const checked = e.target.checked;
             currentProgress[dayId] = checked;
             localStorage.setItem(storageKey, JSON.stringify(currentProgress));
-            
-            if (checked) {
-                dayCard.classList.add('completed');
-            } else {
-                dayCard.classList.remove('completed');
-            }
+            if (checked) dayCard.classList.add('completed');
+            else dayCard.classList.remove('completed');
         });
 
-        // 2. METEMOS LA TARJETA EN LA CAJA INVISIBLE, NO EN EL HTML
         fragment.appendChild(dayCard);
     });
 

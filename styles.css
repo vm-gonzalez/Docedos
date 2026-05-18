@@ -839,3 +839,105 @@ body.light-theme .input-group input::placeholder {
     background-color: rgba(26, 26, 26, 0.4);
     border-top: 1px solid var(--border-color);
 }
+
+/* --- NUEVAS PALETAS DE COLORES --- */
+body.theme-pink {
+    --primary-color: #ff66b2; /* Rosa */
+    --primary-hover: #ff4d94;
+    --accent-blue: #ff66b2;
+}
+
+body.theme-green {
+    --primary-color: #00ff00; /* Verde eléctrico */
+    --primary-hover: #00cc00;
+    --accent-blue: #00ff00;
+}
+
+/* --- MENÚ DE CONFIGURACIÓN (Ruedita) --- */
+.settings-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.settings-toggle:hover {
+    color: var(--primary-color);
+    transform: rotate(45deg); /* Gira la ruedita al pasar el mouse */
+}
+
+.settings-menu {
+    display: none;
+    position: absolute;
+    top: 150%;
+    right: 0;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    min-width: 130px;
+}
+
+.settings-menu.active {
+    display: block;
+    animation: slideInDown 0.2s ease;
+}
+
+.settings-menu span {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    color: var(--text-muted);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+
+.color-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.color-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-btn:hover { transform: scale(1.1); }
+.color-btn.blue { background-color: #007bff; }
+.color-btn.pink { background-color: #ff66b2; }
+.color-btn.green { background-color: #00ff00; }
+
+/* Ajuste del ícono del tema solar/lunar */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+}
+.theme-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* Ícono del Ojo en el Modal */
+.btn-blur {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem;
+}
