@@ -6,79 +6,98 @@ let currentLang = 'es';
 const isLoggedIn = localStorage.getItem('docedos_logged_in') === 'true';
 const currentPath = window.location.pathname;
 
-// Identificadores de ruta más robustos (sirven para desarrollo y producción)
 const isIndex = currentPath === '/' || currentPath.includes('index.html') || currentPath.endsWith('/index');
 const isLogin = currentPath.includes('login.html') || currentPath.endsWith('/login');
 const isHome = currentPath.includes('home.html') || currentPath.endsWith('/home');
 
-// 1. Si ya inició sesión y entra a index o login, mandarlo directo a home
-if (isLoggedIn && (isIndex || isLogin)) {
-    window.location.href = 'home.html';
-}
+if (isLoggedIn && (isIndex || isLogin)) window.location.href = 'home.html';
+if (!isLoggedIn && isHome) window.location.href = 'login.html';
 
-// 2. Si NO ha iniciado sesión e intenta entrar a home, devolverlo al login
-if (!isLoggedIn && isHome) {
-    window.location.href = 'login.html';
-}
+// ==========================================
+// --- LÓGICA DEL MENÚ HAMBURGUESA ---
+// ==========================================
+const btnHamburger = document.getElementById('btn-hamburger');
+const navControls = document.querySelector('.nav-controls');
 
-// --- LOGICA GLOBAL (Aplica a ambas páginas) ---
-const btnLang = document.getElementById('btn-lang');
-const btnTheme = document.getElementById('btn-theme');
-
-// Lógica del cambio de idioma
-if (btnLang) {
-    btnLang.addEventListener('click', () => {
-        currentLang = currentLang === 'es' ? 'en' : 'es';
-        
-        // Elementos compartidos
-        btnLang.textContent = translations[currentLang].langBtn;
-        if(document.getElementById('verse-text')) document.getElementById('verse-text').innerHTML = translations[currentLang].verseText;
-        if(document.getElementById('attribution-text')) document.getElementById('attribution-text').innerHTML = translations[currentLang].attributionText;
-
-        // Elementos de index.html
-        if(document.getElementById('btn-ingresar')) document.getElementById('btn-ingresar').textContent = translations[currentLang].ingresar;
-        if(document.getElementById('title-1')) document.getElementById('title-1').textContent = translations[currentLang].title1;
-        if(document.getElementById('title-2')) document.getElementById('title-2').textContent = translations[currentLang].title2;
-        if(document.getElementById('title-3')) document.getElementById('title-3').textContent = translations[currentLang].title3;
-        if(document.getElementById('desc')) document.getElementById('desc').textContent = translations[currentLang].desc;
-        if(document.getElementById('btn-empezar')) document.getElementById('btn-empezar').textContent = translations[currentLang].empezar;
-
-        // Elementos de login.html
-        if(document.getElementById('tab-login')) document.getElementById('tab-login').textContent = translations[currentLang].tabLogin;
-        if(document.getElementById('tab-register')) document.getElementById('tab-register').textContent = translations[currentLang].tabRegister;
-        if(document.getElementById('lbl-email-login')) document.getElementById('lbl-email-login').textContent = translations[currentLang].lblEmail;
-        if(document.getElementById('lbl-pass-login')) document.getElementById('lbl-pass-login').textContent = translations[currentLang].lblPass;
-        if(document.getElementById('lbl-name-reg')) document.getElementById('lbl-name-reg').textContent = translations[currentLang].lblName;
-        if(document.getElementById('lbl-email-reg')) document.getElementById('lbl-email-reg').textContent = translations[currentLang].lblEmail;
-        if(document.getElementById('lbl-pass-reg')) document.getElementById('lbl-pass-reg').textContent = translations[currentLang].lblPass;
-        if(document.getElementById('btn-submit-login')) document.getElementById('btn-submit-login').textContent = translations[currentLang].btnSubmitLogin;
-        if(document.getElementById('btn-submit-reg')) document.getElementById('btn-submit-reg').textContent = translations[currentLang].btnSubmitReg;
-
-        // Elementos de home.html
-        if(document.getElementById('dash-title')) document.getElementById('dash-title').innerHTML = translations[currentLang].dashTitle;
-        if(document.getElementById('dash-subtitle')) document.getElementById('dash-subtitle').textContent = translations[currentLang].dashSubtitle;
-        if(document.getElementById('card-title-sexual')) document.getElementById('card-title-sexual').textContent = translations[currentLang].titleSexual;
-        if(document.getElementById('card-desc-sexual')) document.getElementById('card-desc-sexual').textContent = translations[currentLang].descSexual;
-        if(document.getElementById('card-title-orgullo')) document.getElementById('card-title-orgullo').textContent = translations[currentLang].titleOrgullo;
-        if(document.getElementById('card-desc-orgullo')) document.getElementById('card-desc-orgullo').textContent = translations[currentLang].descOrgullo;
-        if(document.getElementById('card-title-gratitud')) document.getElementById('card-title-gratitud').textContent = translations[currentLang].titleGratitud;
-        if(document.getElementById('card-desc-gratitud')) document.getElementById('card-desc-gratitud').textContent = translations[currentLang].descGratitud;
-        if(document.getElementById('btn-logout')) document.getElementById('btn-logout').textContent = translations[currentLang].logout;
-        
-        const cardBtns = document.querySelectorAll('.btn-card');
-        cardBtns.forEach(btn => btn.textContent = translations[currentLang].btnLuchar);
+if (btnHamburger && navControls) {
+    btnHamburger.addEventListener('click', () => {
+        navControls.classList.toggle('active');
     });
 }
 
-// SVGs para el botón de Tema
+// ==========================================
+// --- LOGICA GLOBAL (Idioma y Tema) ---
+// ==========================================
+const btnLang = document.getElementById('btn-lang');
+const btnTheme = document.getElementById('btn-theme');
+
+// 1. CARGAR Y APLICAR IDIOMA GUARDADO
+let currentLang = localStorage.getItem('docedos_lang') || 'es';
+
+function applyLanguage() {
+    if(!btnLang) return;
+    btnLang.textContent = translations[currentLang].langBtn;
+    if(document.getElementById('verse-text')) document.getElementById('verse-text').innerHTML = translations[currentLang].verseText;
+    if(document.getElementById('attribution-text')) document.getElementById('attribution-text').innerHTML = translations[currentLang].attributionText;
+    
+    // Index
+    if(document.getElementById('btn-ingresar')) document.getElementById('btn-ingresar').textContent = translations[currentLang].ingresar;
+    if(document.getElementById('title-1')) document.getElementById('title-1').textContent = translations[currentLang].title1;
+    if(document.getElementById('title-2')) document.getElementById('title-2').textContent = translations[currentLang].title2;
+    if(document.getElementById('title-3')) document.getElementById('title-3').textContent = translations[currentLang].title3;
+    if(document.getElementById('desc')) document.getElementById('desc').textContent = translations[currentLang].desc;
+    if(document.getElementById('btn-empezar')) document.getElementById('btn-empezar').textContent = translations[currentLang].empezar;
+
+    // Login
+    if(document.getElementById('tab-login')) document.getElementById('tab-login').textContent = translations[currentLang].tabLogin;
+    if(document.getElementById('tab-register')) document.getElementById('tab-register').textContent = translations[currentLang].tabRegister;
+    if(document.getElementById('lbl-email-login')) document.getElementById('lbl-email-login').textContent = translations[currentLang].lblEmail;
+    if(document.getElementById('lbl-pass-login')) document.getElementById('lbl-pass-login').textContent = translations[currentLang].lblPass;
+    if(document.getElementById('lbl-name-reg')) document.getElementById('lbl-name-reg').textContent = translations[currentLang].lblName;
+    if(document.getElementById('lbl-email-reg')) document.getElementById('lbl-email-reg').textContent = translations[currentLang].lblEmail;
+    if(document.getElementById('lbl-pass-reg')) document.getElementById('lbl-pass-reg').textContent = translations[currentLang].lblPass;
+    if(document.getElementById('btn-submit-login')) document.getElementById('btn-submit-login').textContent = translations[currentLang].btnSubmitLogin;
+    if(document.getElementById('btn-submit-reg')) document.getElementById('btn-submit-reg').textContent = translations[currentLang].btnSubmitReg;
+
+    // Home
+    if(document.getElementById('dash-title')) document.getElementById('dash-title').innerHTML = translations[currentLang].dashTitle;
+    if(document.getElementById('dash-subtitle')) document.getElementById('dash-subtitle').textContent = translations[currentLang].dashSubtitle;
+    if(document.getElementById('card-title-sexual')) document.getElementById('card-title-sexual').textContent = translations[currentLang].titleSexual;
+    if(document.getElementById('card-desc-sexual')) document.getElementById('card-desc-sexual').textContent = translations[currentLang].descSexual;
+    if(document.getElementById('card-title-orgullo')) document.getElementById('card-title-orgullo').textContent = translations[currentLang].titleOrgullo;
+    if(document.getElementById('card-desc-orgullo')) document.getElementById('card-desc-orgullo').textContent = translations[currentLang].descOrgullo;
+    if(document.getElementById('card-title-gratitud')) document.getElementById('card-title-gratitud').textContent = translations[currentLang].titleGratitud;
+    if(document.getElementById('card-desc-gratitud')) document.getElementById('card-desc-gratitud').textContent = translations[currentLang].descGratitud;
+    if(document.getElementById('btn-logout')) document.getElementById('btn-logout').textContent = translations[currentLang].logout;
+    
+    document.querySelectorAll('.btn-card').forEach(btn => btn.textContent = translations[currentLang].btnLuchar);
+}
+applyLanguage(); // Aplicar apenas cargue la página
+
+if (btnLang) {
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'es' ? 'en' : 'es';
+        localStorage.setItem('docedos_lang', currentLang); // Guardar preferencia
+        applyLanguage();
+    });
+}
+
+// 2. CARGAR Y APLICAR TEMA OSCURO/CLARO
 const sunSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
 const moonSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
 
-// Lógica del cambio de tema sin emojis
+const savedThemeLight = localStorage.getItem('docedos_theme') === 'light';
+if (savedThemeLight) {
+    document.body.classList.add('light-theme');
+}
+
 if (btnTheme) {
+    btnTheme.innerHTML = document.body.classList.contains('light-theme') ? moonSvg : sunSvg;
+    
     btnTheme.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        btnTheme.innerHTML = document.body.classList.contains('light-theme') ? moonSvg : sunSvg;
+        const isNowLight = document.body.classList.toggle('light-theme');
+        localStorage.setItem('docedos_theme', isNowLight ? 'light' : 'dark'); // Guardar preferencia
+        btnTheme.innerHTML = isNowLight ? moonSvg : sunSvg;
     });
 }
 
@@ -178,6 +197,8 @@ function showNotification(message, isError = false) {
 
 const API_URL = 'https://charismatic-victory-production.up.railway.app';
 
+const formRegister = document.getElementById('form-register');
+
 // 1. Lógica para Enviar el Formulario de Registro
 if (formRegister) {
     formRegister.addEventListener('submit', async (e) => {
@@ -186,6 +207,14 @@ if (formRegister) {
         const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
+        const submitBtn = document.getElementById('btn-submit-reg');
+
+        // Si el botón ya está deshabilitado (procesando), ignoramos el clic extra
+        if (submitBtn.disabled) return;
+
+        // Deshabilitar botón para evitar doble envío
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Registrando...';
 
         try {
             const response = await fetch(`${API_URL}/register`, {
@@ -201,7 +230,7 @@ if (formRegister) {
             if (response.ok) {
                 showNotification('¡Cuenta creada con éxito! Ahora puedes iniciar sesión.');
                 formRegister.reset();
-                tabLogin.click();
+                document.getElementById('tab-login').click(); // Cambia a la pestaña de login automáticamente
             } else {
                 const errorMsg = data.errors ? data.errors.join(', ') : 'Datos inválidos';
                 showNotification('Error al crear cuenta: ' + errorMsg, true);
@@ -209,6 +238,10 @@ if (formRegister) {
         } catch (error) {
             console.error('Error:', error);
             alert('No se pudo conectar con el servidor. ¿Está encendido el backend?');
+        } finally {
+            // Volvemos a habilitar el botón y restauramos su texto usando el idioma actual
+            submitBtn.disabled = false;
+            submitBtn.textContent = translations[currentLang].btnSubmitReg;
         }
     });
 }
@@ -220,6 +253,14 @@ if (formLogin) {
 
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
+        const submitBtn = document.getElementById('btn-submit-login');
+
+        // Si ya se está procesando (botón deshabilitado), cancela un doble toque.
+        if (submitBtn.disabled) return; 
+        
+        // Deshabilita el botón mientras se procesa
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Ingresando...';
 
         try {
             const response = await fetch(`${API_URL}/login`, {
@@ -240,13 +281,17 @@ if (formLogin) {
                 setTimeout(() => {
                     window.location.href = 'home.html';
                 }, 800); 
-
             } else {
                 showNotification('Error: ' + data.error, true);
+                // Si hubo error, volvemos a habilitar el botón
+                submitBtn.disabled = false;
+                submitBtn.textContent = translations[currentLang].btnSubmitLogin;
             }
         } catch (error) {
             console.error('Error:', error);
             alert('No se pudo conectar con el servidor. ¿Está encendido el backend?');
+            submitBtn.disabled = false;
+            submitBtn.textContent = translations[currentLang].btnSubmitLogin;
         }
     });
 }

@@ -941,3 +941,46 @@ body.theme-green {
     justify-content: center;
     padding: 0.4rem;
 }
+
+/* =========================================
+   --- MENÚ HAMBURGUESA (MÓVIL) --- 
+   ========================================= */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .hamburger-menu {
+        display: block; /* Muestra el icono en celular */
+    }
+
+    .nav-controls {
+        position: absolute;
+        top: 60px; /* Ajusta según la altura real de tu navbar */
+        left: 0;
+        right: 0;
+        background-color: var(--surface-color);
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        display: none; /* Oculto por defecto */
+    }
+
+    .nav-controls.active {
+        display: flex; /* Se muestra al hacer click */
+    }
+
+    /* Ajustar el submenú de colores para que no se corte en móvil */
+    .settings-menu {
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+    }
+}
