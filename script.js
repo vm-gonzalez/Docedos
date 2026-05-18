@@ -18,8 +18,18 @@ const btnHamburger = document.getElementById('btn-hamburger');
 const navControls = document.querySelector('.nav-controls');
 
 if (btnHamburger && navControls) {
-    btnHamburger.addEventListener('click', () => {
+    // 1. Abrir/Cerrar al hacer click en el botón
+    btnHamburger.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita que este click se confunda con el click de afuera
         navControls.classList.toggle('active');
+    });
+
+    // 2. Cerrar al hacer click en cualquier parte fuera del menú
+    document.addEventListener('click', (e) => {
+        // Si el menú está abierto y el clic NO fue dentro del menú ni en el botón hamburguesa
+        if (navControls.classList.contains('active') && !navControls.contains(e.target) && !btnHamburger.contains(e.target)) {
+            navControls.classList.remove('active');
+        }
     });
 }
 
