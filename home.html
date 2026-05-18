@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docedos - Inicio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="home.html" class="logo">
+                <img src="/assets/images/logo2.png" alt="Logo Espada">
+                <span>docedos</span>
+            </a>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="btn-theme">☀️</button>
+                <button class="lang-toggle" id="btn-lang">EN</button>
+                <a href="index.html" class="btn btn-outline" id="btn-logout">Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-wrapper">
+        <div class="dashboard-container">
+            <header class="dashboard-header">
+                <h1 id="dash-title">Áreas de <span class="emphasized">Batalla</span></h1>
+                <p id="dash-subtitle">Selecciona un área para memorizar y renovar tu entendimiento hoy.</p>
+            </header>
+
+            <div class="battle-grid">
+                <div class="battle-card">
+                    <div class="card-icon">🛡️</div>
+                    <h2 class="card-title" id="card-title-sexual">Pecado Sexual</h2>
+                    <p class="card-desc" id="card-desc-sexual">Guardar el cuerpo y la mente en santidad, huyendo de las pasiones juveniles.</p>
+                    <button class="btn btn-outline btn-card" id="btn-card-sexual">Luchar</button>
+                </div>
+
+                <div class="battle-card">
+                    <div class="card-icon">👑</div>
+                    <h2 class="card-title" id="card-title-orgullo">Orgullo / Soberbia</h2>
+                    <p class="card-desc" id="card-desc-orgullo">Reconocer la dependencia absoluta de Dios y revestirse de profunda humildad.</p>
+                    <button class="btn btn-outline btn-card" id="btn-card-orgullo">Luchar</button>
+                </div>
+
+                <div class="battle-card">
+                    <div class="card-icon">🙏</div>
+                    <h2 class="card-title" id="card-title-gratitud">Falta de Gratitud</h2>
+                    <p class="card-desc" id="card-desc-gratitud">Combatir la queja permanente desarrollando un corazón agradecido en todo.</p>
+                    <button class="btn btn-outline btn-card" id="btn-card-gratitud">Luchar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-dark">
+        <div class="footer-left">
+            <span class="copyright">&copy; 2026 docedos</span>
+        </div>
+        <div class="footer-center">
+            <span class="verse" id="verse-text">"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento..." <strong class="verse-ref">— Romanos 12:2</strong></span>
+        </div>
+        <div class="footer-right">
+            <span class="attribution" id="attribution-text">
+                Logo creado por: <a href="https://www.flaticon.es/iconos-gratis/espada" target="_blank">FR_Media - Flaticon</a>
+            </span>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
