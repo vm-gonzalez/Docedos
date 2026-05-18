@@ -195,8 +195,6 @@ function showNotification(message, isError = false) {
 
 const API_URL = 'https://charismatic-victory-production.up.railway.app';
 
-const formRegister = document.getElementById('form-register');
-
 // 1. Lógica para Enviar el Formulario de Registro
 if (formRegister) {
     formRegister.addEventListener('submit', async (e) => {
