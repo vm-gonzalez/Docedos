@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docedos - Ingresar</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <img src="/assets/images/logo2.png" alt="Logo Espada">
+                <span>docedos</span>
+            </a>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="btn-theme">☀️</button>
+                <button class="lang-toggle" id="btn-lang">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button id="tab-login" class="tab-btn active">Iniciar Sesión</button>
+                <button id="tab-register" class="tab-btn">Crear Cuenta</button>
+            </div>
+
+            <form id="form-login" class="auth-form active">
+                <div class="input-group">
+                    <label for="login-email" id="lbl-email-login">Correo Electrónico</label>
+                    <input type="email" id="login-email" required autocomplete="email" placeholder="ejemplo@correo.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password" id="lbl-pass-login">Contraseña</label>
+                    <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="btn-submit-login">Ingresar</button>
+            </form>
+
+            <form id="form-register" class="auth-form" style="display: none;">
+                <div class="input-group">
+                    <label for="register-name" id="lbl-name-reg">Nombre</label>
+                    <input type="text" id="register-name" required autocomplete="name" placeholder="Tu nombre">
+                </div>
+                <div class="input-group">
+                    <label for="register-email" id="lbl-email-reg">Correo Electrónico</label>
+                    <input type="email" id="register-email" required autocomplete="email" placeholder="ejemplo@correo.com">
+                </div>
+                <div class="input-group">
+                    <label for="register-password" id="lbl-pass-reg">Contraseña</label>
+                    <input type="password" id="register-password" required autocomplete="new-password" placeholder="Crea una contraseña">
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="btn-submit-reg">Registrarse</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer-dark">
+        <div class="footer-left">
+            <span class="copyright">&copy; 2026 docedos</span>
+        </div>
+        <div class="footer-center">
+            <span class="verse" id="verse-text">"No os conforméis a este siglo, sino transformaos..." <strong class="verse-ref">— Romanos 12:2</strong></span>
+        </div>
+        <div class="footer-right">
+            <span class="attribution" id="attribution-text">
+                Logo creado por: <a href="https://www.flaticon.es/iconos-gratis/espada" target="_blank">FR_Media - Flaticon</a>
+            </span>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
