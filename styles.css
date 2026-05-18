@@ -19,6 +19,11 @@ body.light-theme {
     --border-color: #e0e0e0;
 }
 
+/* Ajuste del fondo del versículo para el modo claro */
+body.light-theme .day-body {
+    background-color: rgba(0, 0, 0, 0.03); /* Un gris muy sutil y limpio */
+}
+
 /* --- Reset Básico y Transiciones --- */
 * {
     margin: 0;
@@ -642,8 +647,8 @@ body.light-theme .input-group input::placeholder {
     align-items: center;
     padding: 1rem;
     gap: 1rem;
+    cursor: pointer; /* Todo el header será clicable */
 }
-
 /* Checkbox personalizado nativo adaptado al tema azul */
 .day-checkbox {
     width: 22px;
@@ -737,3 +742,100 @@ body.light-theme .input-group input::placeholder {
 /* Scrollbar estética */
 .verses-list::-webkit-scrollbar { width: 5px; }
 .verses-list::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 4px; }
+
+.day-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    cursor: pointer; /* Todo el header será clicable */
+}
+
+/* =========================================
+   CHECKBOX PERSONALIZADO ESTÉTICO
+   ========================================= */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Ocultamos el input nativo */
+.custom-checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+/* Diseñamos el nuevo cuadrito */
+.checkmark {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 6px; /* Bordes ligeramente redondeados */
+    transition: all 0.2s ease;
+}
+
+/* Cambio de color cuando está checkeado */
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Dibujamos el "check" (la palomita) con CSS */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* =========================================
+   TRANSICIÓN DEL ACORDEÓN (ANIMACIÓN FLUIDA)
+   ========================================= */
+.toggle-arrow {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+/* Rotar la flecha en lugar de cambiar el emoji */
+.day-card.open .toggle-arrow {
+    transform: rotate(180deg); 
+}
+
+/* Wrapper para la animación con Grid */
+.day-body-wrapper {
+    display: grid;
+    grid-template-rows: 0fr; /* Empieza cerrado */
+    transition: grid-template-rows 0.3s ease; /* Transición fluida */
+}
+
+.day-card.open .day-body-wrapper {
+    grid-template-rows: 1fr; /* Se expande a su tamaño real */
+}
+
+.day-body-inner {
+    overflow: hidden; /* Evita que el texto sobresalga mientras se anima */
+}
+
+.day-body {
+    padding: 1rem 1.25rem;
+    background-color: rgba(26, 26, 26, 0.4);
+    border-top: 1px solid var(--border-color);
+}
