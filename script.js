@@ -176,9 +176,7 @@ function showNotification(message, isError = false) {
     }, 3000);
 }
 
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3000'
-    : 'https://charismatic-victory-production.up.railway.app';
+const API_URL = 'https://charismatic-victory-production.up.railway.app';
 
 // 1. Lógica para Enviar el Formulario de Registro
 if (formRegister) {
