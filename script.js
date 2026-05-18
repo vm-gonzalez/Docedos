@@ -254,3 +254,151 @@ if (formLogin) {
         }
     });
 }
+
+// ==========================================
+// --- REGISTRO DEL SERVICE WORKER (PWA) ---
+// ==========================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registrado con éxito en el scope: ', registration.scope);
+      })
+      .catch(err => {
+        console.log('Fallo al registrar el ServiceWorker: ', err);
+      });
+  });
+}
+
+// ==========================================
+// --- LÓGICA DE LAS ÁREAS DE BATALLA ---
+// ==========================================
+
+// Lista de 30 versículos contra el Pecado Sexual
+const sexualSinVerses = [
+    { ref: "1 Tesalonicenses 4:3", text: "Pues la voluntad de Dios es vuestra santificación; que os apartéis de fornicación." },
+    { ref: "1 Tesalonicenses 4:4-5", text: "Que cada uno de vosotros sepa tener su propia esposa en santidad y honor; no en pasión de concupiscencia, como los gentiles que no conocen a Dios." },
+    { ref: "1 Corintios 6:18", text: "Huid de la fornicación. Cualquier otro pecado que el hombre cometa, está fuera del cuerpo; mas el que fornica, contra su propio cuerpo peca." },
+    { ref: "1 Corintios 6:19-20", text: "¿O ignoráis que vuestro cuerpo es templo del Espíritu Santo, el cual está en vosotros, el cual tenéis de Dios, y que no sois vuestros? Porque habéis sido comprados por precio; glorificad, pues, a Dios en vuestro cuerpo." },
+    { ref: "Colosenses 3:5", text: "Haced morir, pues, lo terrenal en vosotros: fornicación, impureza, pasiones desordenadas, malos deseos y avaricia, que es idolatría." },
+    { ref: "Efesios 5:3", text: "Pero fornicación y toda impureza, o avaricia, ni aun se nombre entre vosotros, como conviene a santos." },
+    { ref: "Mateo 5:28", text: "Pero yo os digo que cualquiera que mira a una mujer para codiciarla, ya adulteró con ella en su corazón." },
+    { ref: "2 Timoteo 2:22", text: "Huye también de las pasiones juveniles, y sigue la justicia, la fe, el amor y la paz, con los que de corazón limpio invocan al Señor." },
+    { ref: "Salmos 119:9", text: "¿Con qué limpiará el joven su camino? Con guardar tu palabra." },
+    { ref: "Proverbios 4:23", text: "Sobre toda cosa guardada, guarda tu corazón; porque de él mana la vida." },
+    { ref: "Hebreos 13:4", text: "Honroso sea en todos el matrimonio, y el lecho sin mancilla; pero a los fornicarios y a los adúlteros los juzgará Dios." },
+    { ref: "Gálatas 5:16", text: "Digo, pues: Andad en el Espíritu, y no satisfagáis los deseos de la carne." },
+    { ref: "1 Pedro 2:11", text: "Amados, yo os ruego como a extranjeros y peregrinos, que os abstengáis de los deseos carnales que batallan contra el alma." },
+    { ref: "Romanos 13:14", text: "Sino vestíos del Señor Jesucristo, y no proveáis para los deseos de la carne." },
+    { ref: "Filipenses 4:8", text: "Por lo demás, hermanos, todo lo que es verdadero, todo lo honesto, todo lo justo, todo lo puro, todo lo amable, todo lo que es de buen nombre; si hay virtud alguna, si algo digno de alabanza, en esto pensad." },
+    { ref: "1 Juan 2:16", text: "Porque todo lo que hay en el mundo, los deseos de la carne, los deseos de los ojos, y la vanagloria de la vida, no proviene del Padre, sino del mundo." },
+    { ref: "Santiago 1:14-15", text: "Sino que cada uno es tentado, cuando de su propia concupiscencia es atraído y seducido. Entonces la concupiscencia, después que ha concebido, da a luz el pecado." },
+    { ref: "1 Corintios 10:13", text: "No os ha sobrevenido ninguna tentación que no sea humana; pero fiel es Dios, que no os dejará ser tentados más de lo que podéis resistir." },
+    { ref: "Salmos 51:10", text: "Crea en mí, oh Dios, un corazón limpio, y renueva un espíritu recto dentro de mí." },
+    { ref: "Proverbios 6:25", text: "No codicies su hermosura en tu corazón, ni ella te prenda con sus ojos." },
+    { ref: "Job 31:1", text: "Hice pacto con mis ojos; ¿Cómo, pues, había yo de mirar a una virgen?" },
+    { ref: "2 Corintios 7:1", text: "Así que, amados, puesto que tenemos tales promesas, limpiémonos de toda contaminación de carne y de espíritu, perfeccionando la santidad en el temor de Dios." },
+    { ref: "Romanos 6:12", text: "No reine, pues, el pecado en vuestro cuerpo mortal, de modo que lo obedezcáis en sus concupiscencias." },
+    { ref: "Gálatas 5:19-21", text: "Y manifiestas son las obras de la carne, que son: adulterio, fornicación, inmundicia, lascivia... los que practican tales cosas no heredarán el reino de Dios." },
+    { ref: "Efesios 5:5", text: "Porque sabéis esto, que ningún fornicario, o inmundo, o avaro, que es idólatra, tiene herencia en el reino de Cristo y de Dios." },
+    { ref: "Tito 2:11-12", text: "Porque la gracia de Dios se ha manifestado para salvación... enseñándonos que, renunciando a la impiedad y a los deseos mundanos, vivamos en este siglo sobria, justa y piadosamente." },
+    { ref: "1 Corintios 10:8", text: "Ni forniquemos, como algunos de ellos fornicaron, y cayeron en un día veintitrés mil." },
+    { ref: "Romanos 8:13", text: "Porque si vivís conforme a la carne, moriréis; mas si por el Espíritu hacéis morir las obras de la carne, viviréis." },
+    { ref: "Mateo 15:19", text: "Porque del corazón salen los malos pensamientos, los homicidios, los adulterios, las fornicaciones, los hurtos, los falsos testimonios, las blasfemias." },
+    { ref: "1 Tesalonicenses 4:7", text: "Pues no nos ha llamado Dios a inmundicia, sino a santificación." }
+];
+
+// Cargar progreso del almacenamiento del dispositivo
+let sexualProgress = JSON.parse(localStorage.getItem('docedos_sexual_progress')) || {};
+
+// Elementos del DOM
+const btnSexualSin = document.getElementById('btn-card-sexual');
+const modal = document.getElementById('verses-modal');
+const btnCloseModal = document.getElementById('btn-close-modal');
+const versesListContainer = document.getElementById('verses-list');
+
+if (btnSexualSin) {
+    btnSexualSin.addEventListener('click', () => {
+        versesListContainer.innerHTML = ''; // Limpiar contenedor
+        
+        sexualSinVerses.forEach((verse, index) => {
+            const dayId = `day_${index + 1}`;
+            const isChecked = sexualProgress[dayId] ? 'checked' : '';
+            const completedClass = sexualProgress[dayId] ? 'completed' : '';
+
+            // Crear tarjeta estilo acordeón para cada día
+            const dayCard = document.createElement('div');
+            dayCard.className = `day-card ${completedClass}`;
+            
+            dayCard.innerHTML = `
+                <div class="day-header">
+                    <input type="checkbox" class="day-checkbox" data-day="${dayId}" ${isChecked}>
+                    <div class="day-info">
+                        <span class="day-name">Día ${index + 1}</span>
+                        <span class="day-ref-sub">${verse.ref}</span>
+                    </div>
+                </div>
+                <div class="day-body">
+                    <p class="verse-text-p blurred">"${verse.text}"</p>
+                    <div class="blur-actions">
+                        <button class="btn-blur">👁️ Desenfocar</button>
+                    </div>
+                </div>
+            `;
+
+            // LÓGICA 1: Abrir / Cerrar Acordeón al hacer click en el día
+            const dayInfo = dayCard.querySelector('.day-info');
+            const arrow = dayCard.querySelector('.toggle-arrow');
+            dayInfo.addEventListener('click', () => {
+                dayCard.classList.toggle('open');
+            });
+
+            // LÓGICA 2: Modo Blur (Click en botón o directamente en el texto borroso)
+            const verseText = dayCard.querySelector('.verse-text-p');
+            const btnBlur = dayCard.querySelector('.btn-blur');
+            
+            const toggleBlur = () => {
+                verseText.classList.toggle('blurred');
+                btnBlur.textContent = verseText.classList.contains('blurred') ? '👁️ Desenfocar' : '🙈 Ocultar';
+            };
+            btnBlur.addEventListener('click', toggleBlur);
+            verseText.addEventListener('click', () => {
+                if(verseText.classList.contains('blurred')) toggleBlur(); // Solo desenfoca al clickear si estaba borroso
+            });
+
+            // LÓGICA 3: Guardar el Check en LocalStorage
+            const checkbox = dayCard.querySelector('.day-checkbox');
+            checkbox.addEventListener('change', (e) => {
+                const checked = e.target.checked;
+                sexualProgress[dayId] = checked;
+                localStorage.setItem('docedos_sexual_progress', JSON.stringify(sexualProgress));
+                
+                if (checked) {
+                    dayCard.classList.add('completed');
+                } else {
+                    dayCard.classList.remove('completed');
+                }
+            });
+
+            versesListContainer.appendChild(dayCard);
+        });
+
+        // Mostrar panel modal
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+// Cerrar Modal
+if (btnCloseModal && modal) {
+    btnCloseModal.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+}

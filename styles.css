@@ -67,12 +67,6 @@ body {
     text-transform: lowercase;
 }
 
-.logo img {
-    height: 35px;
-    width: auto; 
-    filter: drop-shadow(0px 0px 1px rgba(255,255,255,0.3)); 
-}
-
 /* --- Controles del Nav --- */
 .nav-controls {
     display: flex;
@@ -551,3 +545,195 @@ body.light-theme .input-group input::placeholder {
         transform: translateX(100%);
     }
 }
+
+/* =========================================
+   --- NUEVA LISTA INTERACTIVA POR DÍAS --- 
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 95%;
+    max-width: 600px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.2);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.modal-title {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-blue);
+    font-size: 1.4rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #ff3333;
+}
+
+.modal-desc {
+    padding: 0 1.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.verses-list {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+}
+
+/* Tarjeta por cada Día */
+.day-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
+}
+
+.day-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+/* Checkbox personalizado nativo adaptado al tema azul */
+.day-checkbox {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.day-info {
+    flex-grow: 1;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    color: var(--text-main);
+    font-size: 1.05rem;
+}
+
+.day-ref-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.toggle-arrow {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+}
+
+/* Contenido oculto del día */
+.day-body {
+    padding: 1rem 1.25rem;
+    background-color: rgba(26, 26, 26, 0.4);
+    border-top: 1px solid var(--border-color);
+    display: none; /* Se maneja con JS */
+}
+
+.day-card.open .day-body {
+    display: block;
+}
+
+/* Efecto Blur para memorizar */
+.verse-text-p {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text-main);
+    transition: filter 0.3s ease;
+}
+
+.verse-text-p.blurred {
+    filter: blur(6px);
+    user-select: none; /* Evita que se pueda copiar/seleccionar el texto oculto */
+    cursor: pointer;
+}
+
+.blur-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-blur {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-blur:hover {
+    border-color: var(--primary-color);
+    color: var(--text-main);
+}
+
+/* Estado de Día Completado con éxito */
+.day-card.completed {
+    border-left: 4px solid #2ae06a; /* Línea verde de progreso */
+}
+
+/* Scrollbar estética */
+.verses-list::-webkit-scrollbar { width: 5px; }
+.verses-list::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 4px; }

@@ -11,12 +11,15 @@
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
     
     <link rel="stylesheet" href="styles.css">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="/assets/images/logo.png">
 </head>
 <body class="dark-theme">
     <header class="navbar">
         <div class="navbar-container">
             <a href="home.html" class="logo">
-                <img src="/assets/images/logo2.png" alt="Logo Espada">
                 <span>docedos</span>
             </a>
             <div class="nav-controls">
@@ -55,6 +58,18 @@
                     <p class="card-desc" id="card-desc-gratitud">Combatir la queja permanente desarrollando un corazón agradecido en todo.</p>
                     <button class="btn btn-outline btn-card" id="btn-card-gratitud">Luchar</button>
                 </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="verses-modal">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2 class="modal-title" id="modal-title">Lucha: Pecado Sexual</h2>
+                    <button class="modal-close" id="btn-close-modal">✖</button>
+                </header>
+                <p class="modal-desc">Memoriza un versículo por día. Toca el texto para ocultarlo y poner a prueba tu memoria.</p>
+                
+                <div class="verses-list" id="verses-list"></div>
             </div>
         </div>
     </main>
