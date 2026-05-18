@@ -1,0 +1,306 @@
+/* --- Variables para el esquema Oscuro/Azul (Dark/Blue) --- */
+:root {
+    --primary-color: #007bff; /* Azul eléctrico vibrante */
+    --primary-hover: #0062cc;
+    --bg-color: #000000; /* Negro puro */
+    --surface-color: #000000; /* Negro para la navbar */
+    --text-main: #ffffff; /* Blanco para títulos y texto principal */
+    --text-muted: #e0e0e0; /* Gris muy claro para párrafos */
+    --border-color: #1a1a1a; /* Negro-gris para bordes sutiles */
+    --accent-blue: #007bff; /* El mismo azul para acentos */
+}
+
+/* --- Variables para el Tema Claro --- */
+body.light-theme {
+    --bg-color: #ffffff;
+    --surface-color: #f8f9fa;
+    --text-main: #1a1a1a;
+    --text-muted: #555555;
+    --border-color: #e0e0e0;
+}
+
+/* --- Reset Básico y Transiciones --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- Navegación --- */
+.navbar {
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+}
+
+.navbar-container {
+    max-width: 1600px;
+    width: 95%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- Logo con Imagen y Texto --- */
+.logo {
+    display: flex; 
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+    letter-spacing: -1.5px;
+    text-transform: lowercase;
+}
+
+.logo img {
+    height: 35px;
+    width: auto; 
+    filter: drop-shadow(0px 0px 1px rgba(255,255,255,0.3)); 
+}
+
+/* --- Controles del Nav --- */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.lang-toggle {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.lang-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* --- Estilos del botón de tema --- */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* --- Sistema de Botones --- */
+.btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.btn-outline:hover {
+    border-color: var(--accent-blue);
+    background-color: var(--accent-blue);
+    color: #ffffff;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: #ffffff;
+    padding: 0.875rem 2.5rem;
+    font-size: 1.125rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* --- Sección Hero (Principal) --- */
+.hero {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    text-align: center;
+    background-color: var(--bg-color);
+}
+
+.hero-content {
+    max-width: 800px;
+    width: 100%;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    letter-spacing: -1px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.hero p {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.emphasized {
+    color: var(--accent-blue);
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- Footer Minimalista Integrado --- */
+.footer-dark {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    font-size: 0.75rem; 
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-left, .footer-center, .footer-right {
+    flex: 1;
+}
+
+.footer-center {
+    display: flex;
+    justify-content: center;
+}
+
+.footer-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.copyright {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.verse {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-style: italic;
+    color: var(--text-main);
+    text-align: center;
+    max-width: 600px;
+}
+
+.verse-ref {
+    font-style: normal;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: normal;
+    font-size: 0.7rem;
+}
+
+.attribution {
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--text-muted);
+}
+
+.attribution a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.attribution a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* =========================================
+   --- RESPONSIVIDAD (Media Queries) --- 
+   ========================================= */
+
+/* Tablets y pantallas medianas (hasta 900px) */
+@media (max-width: 900px) {
+    .nav-controls {
+        gap: 1.5rem; /* Reducimos el espacio entre botones en la navbar */
+    }
+
+    .footer-dark {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .footer-left, .footer-center, .footer-right {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* Teléfonos móviles (hasta 600px) */
+@media (max-width: 600px) {
+    .navbar-container {
+        padding: 0 1rem; /* Menos padding lateral para aprovechar pantalla */
+    }
+
+    .logo {
+        font-size: 1.4rem; /* Achicamos un poco el texto del logo */
+        gap: 0.5rem;
+    }
+
+    .logo img {
+        height: 28px; /* Achicamos la imagen de la espada en proporción */
+    }
+
+    .nav-controls {
+        gap: 1rem; /* Apretamos un poco más los botones */
+    }
+
+    .btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem; /* Botón de ingresar más pequeño */
+    }
+
+    .hero {
+        padding: 3rem 1rem;
+    }
+
+    .btn-primary {
+        width: 100%; /* Hacemos que el botón Empezar ocupe todo el ancho (mejor para tocar) */
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+}

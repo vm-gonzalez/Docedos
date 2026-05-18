@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docedos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="logo">
+                <img src="logo2.png" alt="Logo Espada">
+                <span>docedos</span>
+            </a>
+            <div class="nav-controls">
+                <!-- Nuevo botón de tema -->
+                <button class="theme-toggle" id="btn-theme">☀️</button>
+                <!-- Botón de idioma actualizado con ID -->
+                <button class="lang-toggle" id="btn-lang">EN</button>
+                <button class="btn btn-outline" id="btn-ingresar">Ingresar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="hero">
+        <div class="hero-content">
+            <!-- Título dividido en spans con IDs -->
+            <h1>
+                <span id="title-1">Renueva y </span><span class="emphasized" id="title-2">limpia tu mente</span><span id="title-3"> cada día.</span>
+            </h1>
+            <p id="desc">Una app web para luchar contra el pecado memorizando la Palabra cada día.</p>
+            <button class="btn btn-primary" id="btn-empezar">Empezar</button>
+        </div>
+    </main>
+
+    <footer class="footer-dark">
+        <div class="footer-left">
+            <span class="copyright">&copy; 2026 docedos</span>
+        </div>
+        
+        <div class="footer-center">
+            <!-- ID agregado al versículo -->
+            <span class="verse" id="verse-text">"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento..." <strong class="verse-ref">— Romanos 12:2</strong></span>
+        </div>
+
+        <div class="footer-right">
+            <!-- ID agregado a la atribución -->
+            <span class="attribution" id="attribution-text">
+                Logo creado por: <a href="https://www.flaticon.es/iconos-gratis/espada" title="espada iconos" target="_blank">FR_Media - Flaticon</a>
+            </span>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
