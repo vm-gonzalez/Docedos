@@ -6,13 +6,18 @@ let currentLang = 'es';
 const isLoggedIn = localStorage.getItem('docedos_logged_in') === 'true';
 const currentPath = window.location.pathname;
 
+// Identificadores de ruta más robustos (sirven para desarrollo y producción)
+const isIndex = currentPath === '/' || currentPath.includes('index.html') || currentPath.endsWith('/index');
+const isLogin = currentPath.includes('login.html') || currentPath.endsWith('/login');
+const isHome = currentPath.includes('home.html') || currentPath.endsWith('/home');
+
 // 1. Si ya inició sesión y entra a index o login, mandarlo directo a home
-if (isLoggedIn && (currentPath.includes('index.html') || currentPath.includes('login.html') || currentPath === '/')) {
+if (isLoggedIn && (isIndex || isLogin)) {
     window.location.href = 'home.html';
 }
 
 // 2. Si NO ha iniciado sesión e intenta entrar a home, devolverlo al login
-if (!isLoggedIn && currentPath.includes('home.html')) {
+if (!isLoggedIn && isHome) {
     window.location.href = 'login.html';
 }
 
