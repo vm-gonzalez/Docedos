@@ -663,6 +663,7 @@ body.light-theme .input-group input::placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem; /* Asegura que siempre haya una separación mínima entre el Día y la Referencia */
 }
 
 .day-name {
@@ -670,12 +671,16 @@ body.light-theme .input-group input::placeholder {
     font-weight: bold;
     color: var(--text-main);
     font-size: 1.05rem;
+    white-space: nowrap; /* 🔥 Evita terminantemente que "Día" y el "número" se separen en dos líneas */
+    min-width: 55px; /* Le da un ancho base sólido */
 }
 
 .day-ref-sub {
     font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 600;
+    text-align: right; /* Si la referencia se divide en dos líneas, se mantendrá pegada a la derecha */
+    line-height: 1.3;
 }
 
 .toggle-arrow {
