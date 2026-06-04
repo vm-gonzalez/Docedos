@@ -1,4 +1,9 @@
 // ==========================================
+// --- CONFIGURACIÓN GLOBAL ---
+// ==========================================
+const API_URL = 'https://charismatic-victory-production.up.railway.app';
+
+// ==========================================
 // --- PERSISTENCIA DE SESIÓN Y RUTAS ---
 // ==========================================
 const isLoggedIn = localStorage.getItem('docedos_logged_in') === 'true';
@@ -12,21 +17,48 @@ if (isLoggedIn && (isIndex || isLogin)) window.location.href = 'home.html';
 if (!isLoggedIn && isHome) window.location.href = 'login.html';
 
 // ==========================================
+// --- FUNCIÓN DE SINCRONIZACIÓN CON BACKEND ---
+// ==========================================
+async function syncWithBackend() {
+    const userId = localStorage.getItem('docedos_user_id');
+    if (!userId) return; // Si no hay una sesión activa, no transmite datos
+
+    const payload = {
+        user_id: userId,
+        lang: localStorage.getItem('docedos_lang') || 'es',
+        theme: localStorage.getItem('docedos_theme') || 'dark',
+        theme_color: localStorage.getItem('docedos_theme_color') || 'blue',
+        sexual_progress: JSON.parse(localStorage.getItem('docedos_sexual_progress')) || {},
+        orgullo_progress: JSON.parse(localStorage.getItem('docedos_orgullo_progress')) || {},
+        gratitud_progress: JSON.parse(localStorage.getItem('docedos_gratitud_progress')) || {}
+    };
+
+    try {
+        await fetch(`${API_URL}/user/sync`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+    } catch (error) {
+        console.error('Error durante la sincronización remota:', error);
+    }
+}
+
+// ==========================================
 // --- LÓGICA DEL MENÚ HAMBURGUESA ---
 // ==========================================
 const btnHamburger = document.getElementById('btn-hamburger');
 const navControls = document.querySelector('.nav-controls');
 
 if (btnHamburger && navControls) {
-    // 1. Abrir/Cerrar al hacer click en el botón
     btnHamburger.addEventListener('click', (e) => {
-        e.stopPropagation(); // Evita que este click se confunda con el click de afuera
+        e.stopPropagation();
         navControls.classList.toggle('active');
     });
 
-    // 2. Cerrar al hacer click en cualquier parte fuera del menú
     document.addEventListener('click', (e) => {
-        // Si el menú está abierto y el clic NO fue dentro del menú ni en el botón hamburguesa
         if (navControls.classList.contains('active') && !navControls.contains(e.target) && !btnHamburger.contains(e.target)) {
             navControls.classList.remove('active');
         }
@@ -34,7 +66,7 @@ if (btnHamburger && navControls) {
 }
 
 // ==========================================
-// --- LOGICA GLOBAL (Idioma y Tema) ---
+// --- LÓGICA GLOBAL (Idioma y Tema) ---
 // ==========================================
 const btnLang = document.getElementById('btn-lang');
 const btnTheme = document.getElementById('btn-theme');
@@ -80,13 +112,14 @@ function applyLanguage() {
     
     document.querySelectorAll('.btn-card').forEach(btn => btn.textContent = translations[currentLang].btnLuchar);
 }
-applyLanguage(); // Aplicar apenas cargue la página
+applyLanguage();
 
 if (btnLang) {
     btnLang.addEventListener('click', () => {
         currentLang = currentLang === 'es' ? 'en' : 'es';
-        localStorage.setItem('docedos_lang', currentLang); // Guardar preferencia
+        localStorage.setItem('docedos_lang', currentLang);
         applyLanguage();
+        syncWithBackend(); // Sincroniza el idioma con la BD
     });
 }
 
@@ -104,8 +137,9 @@ if (btnTheme) {
     
     btnTheme.addEventListener('click', () => {
         const isNowLight = document.body.classList.toggle('light-theme');
-        localStorage.setItem('docedos_theme', isNowLight ? 'light' : 'dark'); // Guardar preferencia
+        localStorage.setItem('docedos_theme', isNowLight ? 'light' : 'dark');
         btnTheme.innerHTML = isNowLight ? moonSvg : sunSvg;
+        syncWithBackend(); // Sincroniza el tema claro/oscuro con la BD
     });
 }
 
@@ -116,45 +150,41 @@ const btnSettings = document.getElementById('btn-settings');
 const settingsMenu = document.getElementById('settings-menu');
 const colorBtns = document.querySelectorAll('.color-btn');
 
-// AL CARGAR LA PÁGINA: Recuperar el color guardado
 const savedColor = localStorage.getItem('docedos_theme_color');
 if (savedColor) {
     document.body.classList.add(`theme-${savedColor}`);
 }
 
 if (btnSettings && settingsMenu) {
-    // Abrir/Cerrar el menú
     btnSettings.addEventListener('click', () => {
         settingsMenu.classList.toggle('active');
     });
 
-    // Cerrar al hacer click fuera
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.settings-dropdown')) {
             settingsMenu.classList.remove('active');
         }
     });
 
-    // Cambiar color de tema y guardarlo
     colorBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const color = btn.getAttribute('data-color');
-            document.body.classList.remove('theme-pink', 'theme-green'); // Limpiamos anteriores
+            document.body.classList.remove('theme-pink', 'theme-green');
             
             if (color === 'pink' || color === 'green') {
                 document.body.classList.add(`theme-${color}`);
-                localStorage.setItem('docedos_theme_color', color); // Guardamos en el navegador
+                localStorage.setItem('docedos_theme_color', color);
             } else {
-                // Es el color azul por defecto
-                localStorage.removeItem('docedos_theme_color'); // Borramos la preferencia
+                localStorage.removeItem('docedos_theme_color');
             }
             
             settingsMenu.classList.remove('active');
+            syncWithBackend(); // Sincroniza la paleta de color con la BD
         });
     });
 }
 
-// --- LOGICA ESPECIFICA DEL LOGIN ---
+// --- LOGICA ESPECIFICA DEL LOGIN (TABS) ---
 const tabLogin = document.getElementById('tab-login');
 const tabRegister = document.getElementById('tab-register');
 const formLogin = document.getElementById('form-login');
@@ -180,7 +210,6 @@ if (tabLogin && tabRegister) {
 // --- CONEXIÓN CON EL BACKEND (API RAILS) ---
 // ==========================================
 
-// Función para mostrar notificaciones estéticas
 function showNotification(message, isError = false) {
     let container = document.querySelector('.toast-container');
     if (!container) {
@@ -203,9 +232,7 @@ function showNotification(message, isError = false) {
     }, 3000);
 }
 
-const API_URL = 'https://charismatic-victory-production.up.railway.app';
-
-// 1. Lógica para Enviar el Formulario de Registro
+// 1. Registro
 if (formRegister) {
     formRegister.addEventListener('submit', async (e) => {
         e.preventDefault(); 
@@ -215,19 +242,14 @@ if (formRegister) {
         const password = document.getElementById('register-password').value;
         const submitBtn = document.getElementById('btn-submit-reg');
 
-        // Si el botón ya está deshabilitado (procesando), ignoramos el clic extra
         if (submitBtn.disabled) return;
-
-        // Deshabilitar botón para evitar doble envío
         submitBtn.disabled = true;
         submitBtn.textContent = 'Registrando...';
 
         try {
             const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password })
             });
 
@@ -236,7 +258,7 @@ if (formRegister) {
             if (response.ok) {
                 showNotification('¡Cuenta creada con éxito! Ahora puedes iniciar sesión.');
                 formRegister.reset();
-                document.getElementById('tab-login').click(); // Cambia a la pestaña de login automáticamente
+                document.getElementById('tab-login').click(); 
             } else {
                 const errorMsg = data.errors ? data.errors.join(', ') : 'Datos inválidos';
                 showNotification('Error al crear cuenta: ' + errorMsg, true);
@@ -245,14 +267,13 @@ if (formRegister) {
             console.error('Error:', error);
             alert('No se pudo conectar con el servidor. ¿Está encendido el backend?');
         } finally {
-            // Volvemos a habilitar el botón y restauramos su texto usando el idioma actual
             submitBtn.disabled = false;
             submitBtn.textContent = translations[currentLang].btnSubmitReg;
         }
     });
 }
 
-// 2. Lógica para Enviar el Formulario de Inicio de Sesión
+// 2. Inicio de Sesión
 if (formLogin) {
     formLogin.addEventListener('submit', async (e) => {
         e.preventDefault(); 
@@ -261,27 +282,29 @@ if (formLogin) {
         const password = document.getElementById('login-password').value;
         const submitBtn = document.getElementById('btn-submit-login');
 
-        // Si ya se está procesando (botón deshabilitado), cancela un doble toque.
         if (submitBtn.disabled) return; 
-        
-        // Deshabilita el botón mientras se procesa
         submitBtn.disabled = true;
         submitBtn.textContent = 'Ingresando...';
 
         try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // GUARDAR LA SESIÓN EN LOCALSTORAGE
+                // GUARDAR DATOS DE LA SESIÓN RECIBIDOS DE LA BASE DE DATOS
                 localStorage.setItem('docedos_logged_in', 'true');
+                localStorage.setItem('docedos_user_id', data.user.id);
+                localStorage.setItem('docedos_lang', data.user.lang || 'es');
+                localStorage.setItem('docedos_theme', data.user.theme || 'dark');
+                localStorage.setItem('docedos_theme_color', data.user.theme_color || 'blue');
+                localStorage.setItem('docedos_sexual_progress', JSON.stringify(data.user.sexual_progress || {}));
+                localStorage.setItem('docedos_orgullo_progress', JSON.stringify(data.user.orgullo_progress || {}));
+                localStorage.setItem('docedos_gratitud_progress', JSON.stringify(data.user.gratitud_progress || {}));
                 
                 showNotification('¡Sesión iniciada con éxito!');
                 setTimeout(() => {
@@ -289,7 +312,6 @@ if (formLogin) {
                 }, 800); 
             } else {
                 showNotification('Error: ' + data.error, true);
-                // Si hubo error, volvemos a habilitar el botón
                 submitBtn.disabled = false;
                 submitBtn.textContent = translations[currentLang].btnSubmitLogin;
             }
@@ -309,7 +331,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
-        console.log('ServiceWorker registrado con éxito en el scope: ', registration.scope);
+        console.log('ServiceWorker registrado con éxito');
       })
       .catch(err => {
         console.log('Fallo al registrar el ServiceWorker: ', err);
@@ -321,12 +343,18 @@ if ('serviceWorker' in navigator) {
 const btnLogout = document.getElementById('btn-logout');
 if (btnLogout) {
     btnLogout.addEventListener('click', (e) => {
-        e.preventDefault(); // Evitamos que siga el enlace <a> por defecto
+        e.preventDefault();
         
-        // Borramos la sesión del navegador
+        // Limpiar completamente la información local de la sesión y preferencias del usuario
         localStorage.removeItem('docedos_logged_in');
+        localStorage.removeItem('docedos_user_id');
+        localStorage.removeItem('docedos_lang');
+        localStorage.removeItem('docedos_theme');
+        localStorage.removeItem('docedos_theme_color');
+        localStorage.removeItem('docedos_sexual_progress');
+        localStorage.removeItem('docedos_orgullo_progress');
+        localStorage.removeItem('docedos_gratitud_progress');
         
-        // Redirigimos al inicio
         window.location.href = 'index.html';
     });
 }
@@ -334,32 +362,25 @@ if (btnLogout) {
 // ==========================================
 // --- LÓGICA DE LAS ÁREAS DE BATALLA ---
 // ==========================================
-
-// Elementos del DOM generales para el Modal
 const modal = document.getElementById('verses-modal');
 const btnCloseModal = document.getElementById('btn-close-modal');
 const versesListContainer = document.getElementById('verses-list');
 const modalTitle = document.getElementById('modal-title'); 
 
-// Botones de las tarjetas
 const btnSexualSin = document.getElementById('btn-card-sexual');
 const btnOrgullo = document.getElementById('btn-card-orgullo');
-const btnGratitud = document.getElementById('btn-card-gratitud'); // <-- Nuevo Botón
+const btnGratitud = document.getElementById('btn-card-gratitud'); 
 
-// Función maestra para abrir cualquier área de batalla
-// Función maestra para abrir cualquier área de batalla (Optimizada)
 function openBattleModal(title, versesArray, storageKey) {
     if (modalTitle) modalTitle.textContent = `Lucha: ${title}`;
     
     // Cargar progreso específico de esta área
     let currentProgress = JSON.parse(localStorage.getItem(storageKey)) || {};
     
-    versesListContainer.innerHTML = ''; // Limpiar contenedor
+    versesListContainer.innerHTML = ''; 
     
-    // 1. CREAMOS EL FRAGMENTO (Nuestra caja invisible en memoria)
     const fragment = document.createDocumentFragment();
     
-    // SVGs para el botón de Ojo
     const eyeSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     const eyeSlashSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
@@ -368,7 +389,6 @@ function openBattleModal(title, versesArray, storageKey) {
         const isChecked = currentProgress[dayId] ? 'checked' : '';
         const completedClass = currentProgress[dayId] ? 'completed' : '';
 
-        // Crear tarjeta estilo acordeón
         const dayCard = document.createElement('div');
         dayCard.className = `day-card ${completedClass}`;
         
@@ -396,7 +416,6 @@ function openBattleModal(title, versesArray, storageKey) {
             </div>
         `;
 
-        // LÓGICA 1: Abrir / Cerrar Acordeón
         const dayHeader = dayCard.querySelector('.day-header');
         dayHeader.addEventListener('click', (e) => {
             if(e.target.closest('.custom-checkbox')) return;
@@ -405,13 +424,11 @@ function openBattleModal(title, versesArray, storageKey) {
             if (!isCurrentlyOpen) dayCard.classList.add('open');
         });
 
-        // LÓGICA 2: Modo Blur (Actualizado para el ojo)
         const verseText = dayCard.querySelector('.verse-text-p');
         const btnBlur = dayCard.querySelector('.btn-blur');
         
         const toggleBlur = () => {
             verseText.classList.toggle('blurred');
-            // Cambiamos el innerHTML del botón entre ojo abierto y ojo tachado
             btnBlur.innerHTML = verseText.classList.contains('blurred') ? eyeSlashSvg : eyeSvg;
         };
         
@@ -420,7 +437,6 @@ function openBattleModal(title, versesArray, storageKey) {
             if(verseText.classList.contains('blurred')) toggleBlur();
         });
 
-        // LÓGICA 3: Guardar el Check en LocalStorage
         const checkbox = dayCard.querySelector('.day-checkbox');
         checkbox.addEventListener('change', (e) => {
             const checked = e.target.checked;
@@ -428,20 +444,19 @@ function openBattleModal(title, versesArray, storageKey) {
             localStorage.setItem(storageKey, JSON.stringify(currentProgress));
             if (checked) dayCard.classList.add('completed');
             else dayCard.classList.remove('completed');
+            
+            syncWithBackend(); // Sincroniza el nuevo check de progreso con la BD
         });
 
         fragment.appendChild(dayCard);
     });
 
-    // 3. UNA VEZ TERMINADO EL BUCLE, METEMOS TODO AL HTML DE GOLPE
     versesListContainer.appendChild(fragment);
 
-    // Mostrar panel modal
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
-// ASIGNAR EVENTOS A LOS BOTONES
 if (btnSexualSin) {
     btnSexualSin.addEventListener('click', () => {
         openBattleModal('Pecado Sexual', sexualSinVerses, 'docedos_sexual_progress');
@@ -454,14 +469,12 @@ if (btnOrgullo) {
     });
 }
 
-// Evento para el nuevo botón de Gratitud
 if (btnGratitud) {
     btnGratitud.addEventListener('click', () => {
         openBattleModal('Falta de Gratitud', gratitudVerses, 'docedos_gratitud_progress');
     });
 }
 
-// Cerrar Modal
 if (btnCloseModal && modal) {
     btnCloseModal.addEventListener('click', () => {
         modal.classList.remove('active');
