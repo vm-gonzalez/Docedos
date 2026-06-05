@@ -371,8 +371,14 @@ const btnSexualSin = document.getElementById('btn-card-sexual');
 const btnOrgullo = document.getElementById('btn-card-orgullo');
 const btnGratitud = document.getElementById('btn-card-gratitud'); 
 
+// Función auxiliar para generar el título del modal en el idioma correcto
+function getModalTitle(translationKey) {
+    const prefix = currentLang === 'es' ? 'Lucha: ' : 'Fight: ';
+    return prefix + translations[currentLang][translationKey];
+}
+
 function openBattleModal(title, versesArray, storageKey) {
-    if (modalTitle) modalTitle.textContent = `Lucha: ${title}`;
+    if (modalTitle) modalTitle.textContent = title;
     
     // Cargar progreso específico de esta área
     let currentProgress = JSON.parse(localStorage.getItem(storageKey)) || {};
@@ -388,6 +394,11 @@ function openBattleModal(title, versesArray, storageKey) {
         const dayId = `day_${index + 1}`;
         const isChecked = currentProgress[dayId] ? 'checked' : '';
         const completedClass = currentProgress[dayId] ? 'completed' : '';
+        
+        // Traducciones dinámicas para cada tarjeta
+        const dayWord = currentLang === 'es' ? 'Día' : 'Day';
+        const verseRef = verse[currentLang].ref;
+        const verseTextStr = verse[currentLang].text;
 
         const dayCard = document.createElement('div');
         dayCard.className = `day-card ${completedClass}`;
@@ -399,15 +410,15 @@ function openBattleModal(title, versesArray, storageKey) {
                     <span class="checkmark"></span>
                 </label>
                 <div class="day-info">
-                    <span class="day-name">Día ${index + 1}</span>
-                    <span class="day-ref-sub">${verse.ref}</span>
+                    <span class="day-name">${dayWord} ${index + 1}</span>
+                    <span class="day-ref-sub">${verseRef}</span>
                 </div>
                 <span class="toggle-arrow">▼</span>
             </div>
             <div class="day-body-wrapper">
                 <div class="day-body-inner">
                     <div class="day-body">
-                        <p class="verse-text-p">"${verse.text}"</p>
+                        <p class="verse-text-p">"${verseTextStr}"</p>
                         <div class="blur-actions">
                             <button class="btn-blur" title="Ocultar/Mostrar texto">${eyeSvg}</button>
                         </div>
@@ -424,17 +435,17 @@ function openBattleModal(title, versesArray, storageKey) {
             if (!isCurrentlyOpen) dayCard.classList.add('open');
         });
 
-        const verseText = dayCard.querySelector('.verse-text-p');
+        const verseTextNode = dayCard.querySelector('.verse-text-p');
         const btnBlur = dayCard.querySelector('.btn-blur');
         
         const toggleBlur = () => {
-            verseText.classList.toggle('blurred');
-            btnBlur.innerHTML = verseText.classList.contains('blurred') ? eyeSlashSvg : eyeSvg;
+            verseTextNode.classList.toggle('blurred');
+            btnBlur.innerHTML = verseTextNode.classList.contains('blurred') ? eyeSlashSvg : eyeSvg;
         };
         
         btnBlur.addEventListener('click', toggleBlur);
-        verseText.addEventListener('click', () => {
-            if(verseText.classList.contains('blurred')) toggleBlur();
+        verseTextNode.addEventListener('click', () => {
+            if(verseTextNode.classList.contains('blurred')) toggleBlur();
         });
 
         const checkbox = dayCard.querySelector('.day-checkbox');
@@ -459,19 +470,19 @@ function openBattleModal(title, versesArray, storageKey) {
 
 if (btnSexualSin) {
     btnSexualSin.addEventListener('click', () => {
-        openBattleModal('Pecado Sexual', sexualSinVerses, 'docedos_sexual_progress');
+        openBattleModal(getModalTitle('titleSexual'), sexualSinVerses, 'docedos_sexual_progress');
     });
 }
 
 if (btnOrgullo) {
     btnOrgullo.addEventListener('click', () => {
-        openBattleModal('Orgullo / Soberbia', orgulloVerses, 'docedos_orgullo_progress');
+        openBattleModal(getModalTitle('titleOrgullo'), orgulloVerses, 'docedos_orgullo_progress');
     });
 }
 
 if (btnGratitud) {
     btnGratitud.addEventListener('click', () => {
-        openBattleModal('Falta de Gratitud', gratitudVerses, 'docedos_gratitud_progress');
+        openBattleModal(getModalTitle('titleGratitud'), gratitudVerses, 'docedos_gratitud_progress');
     });
 }
 
