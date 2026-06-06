@@ -4,19 +4,6 @@
 const API_URL = 'https://charismatic-victory-production.up.railway.app';
 
 // ==========================================
-// --- PERSISTENCIA DE SESIÓN Y RUTAS ---
-// ==========================================
-const isLoggedIn = localStorage.getItem('docedos_logged_in') === 'true';
-const currentPath = window.location.pathname;
-
-const isIndex = currentPath === '/' || currentPath.includes('index.html') || currentPath.endsWith('/index');
-const isLogin = currentPath.includes('login.html') || currentPath.endsWith('/login');
-const isHome = currentPath.includes('home.html') || currentPath.endsWith('/home');
-
-if (isLoggedIn && (isIndex || isLogin)) window.location.href = 'home.html';
-if (!isLoggedIn && isHome) window.location.href = 'login.html';
-
-// ==========================================
 // --- FUNCIÓN DE SINCRONIZACIÓN CON BACKEND ---
 // ==========================================
 async function syncWithBackend() {

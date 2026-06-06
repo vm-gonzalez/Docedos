@@ -15,6 +15,13 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#000000">
     <link rel="apple-touch-icon" href="/assets/images/logo.png">
+
+    <!-- Redirige al dashboard si ya hay una sesión activa -->
+    <script>
+        if (localStorage.getItem('token')) {
+            window.location.replace('/home.html');
+        }
+    </script>
 </head>
 <body class="dark-theme">
     <header class="navbar">
@@ -58,7 +65,6 @@
 
     <main class="hero">
         <div class="hero-content">
-            <!-- Título dividido en spans con IDs -->
             <h1>
                 <span id="title-1">Renueva y </span><span class="emphasized" id="title-2">limpia tu mente</span><span id="title-3"> cada día.</span>
             </h1>
@@ -73,12 +79,10 @@
         </div>
         
         <div class="footer-center">
-            <!-- ID agregado al versículo -->
             <span class="verse" id="verse-text">"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento..." <strong class="verse-ref">— Romanos 12:2</strong></span>
         </div>
 
         <div class="footer-right">
-            <!-- ID agregado a la atribución -->
             <span class="attribution" id="attribution-text">
                 Logo creado por: <a href="https://www.flaticon.es/iconos-gratis/espada" title="espada iconos" target="_blank">FR_Media - Flaticon</a>
             </span>
