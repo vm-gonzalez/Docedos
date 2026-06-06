@@ -18,7 +18,8 @@
 
     <!-- Expulsa al login si NO hay una sesión activa -->
     <script>
-        if (!localStorage.getItem('token')) {
+        // Si NO hay sesión iniciada, lo expulsa al inicio
+        if (localStorage.getItem('docedos_logged_in') !== 'true') {
             window.location.replace('/index.html');
         }
     </script>

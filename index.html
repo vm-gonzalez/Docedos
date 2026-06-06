@@ -18,7 +18,8 @@
 
     <!-- Redirige al dashboard si ya hay una sesión activa -->
     <script>
-        if (localStorage.getItem('token')) {
+        // Si hay una sesión iniciada, lo manda directo al dashboard
+        if (localStorage.getItem('docedos_logged_in') === 'true') {
             window.location.replace('/home.html');
         }
     </script>
